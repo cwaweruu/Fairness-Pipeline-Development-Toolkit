@@ -1,0 +1,39 @@
+data:
+  path: "data/loan_approval.csv"
+  target_column: "loan_approved"
+  protected_attributes:
+    - "gender"
+    - "race"
+    - "age_group"
+  test_size: 0.3
+  random_state: 42
+
+preprocessing:
+  enabled: true
+  transformers:
+    - "DisparateImpactRemover"
+  repair_level: 0.8
+
+training:
+  method: "ReductionsWrapper"
+  constraint: "DemographicParity"
+  n_estimators: 100
+  max_depth: 3
+  learning_rate: 0.1
+  lambda_fairness: 1.0
+
+fairness:
+  primary_metric: "demographic_parity_difference"
+  threshold: 0.10
+  secondary_metrics:
+    - "equal_opportunity_difference"
+    - "average_odds_difference"
+
+mlflow:
+  experiment_name: "fairness_pipeline_toolkit"
+  run_name_prefix: "pipeline_run"
+  tags:
+    project: "Fairness Pipeline Development"
+    team: "FairML Consulting"
+    version: "1.0.0"
+    domain: "finance"
